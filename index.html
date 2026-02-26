@@ -13,50 +13,28 @@
 </head>
 <body class="min-h-screen">
     <nav class="p-6 border-b border-white/5">
-        <div class="container mx-auto flex justify-between items-center">
+        <div class="container mx-auto">
             <div class="text-2xl font-black text-blue-500">LI<span class="text-white">TOOLS</span></div>
         </div>
     </nav>
-
-    <main class="container mx-auto px-6 py-20 text-center md:text-left">
-        <h1 class="text-5xl font-extrabold mb-12">纯净、高效的<span class="text-blue-500">工具箱</span></h1>
-        
+    <main class="container mx-auto px-6 py-20">
+        <h1 class="text-4xl font-bold mb-10 text-center md:text-left">极简工具箱</h1>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <a href="/m3u8-player" class="glass-card p-8 rounded-3xl block group">
-                <div class="w-14 h-14 bg-blue-600/10 text-blue-500 rounded-2xl flex items-center justify-center mb-6 text-2xl group-hover:scale-110 transition">🎬</div>
+                <div class="text-3xl mb-4">🎬</div>
                 <h3 class="text-xl font-bold mb-2">M3U8 播放器</h3>
-                <p class="text-slate-400 text-sm">支持 HLS 协议的本地隐私播放器。</p>
-                <div class="mt-8 text-blue-500 font-bold text-sm">点击进入 →</div>
+                <p class="text-slate-400 text-sm leading-relaxed">支持 HLS 协议的本地隐私播放器。点击进入使用。</p>
+                <div class="mt-6 text-blue-500 font-bold text-sm">立即开启 →</div>
             </a>
-            
-            <div class="glass-card p-8 rounded-3xl opacity-30">
-                <div class="text-2xl mb-6">⏳</div>
-                <h3 class="text-xl font-bold mb-2">开发中...</h3>
+            <div class="glass-card p-8 rounded-3xl opacity-20">
+                <div class="text-3xl mb-4">⏳</div>
+                <h3 class="text-xl font-bold mb-2">更多工具</h3>
+                <p class="text-slate-400 text-sm">敬请期待...</p>
             </div>
         </div>
     </main>
 </body>
-</html>            </a>        
-        <div class="relative group rounded-2xl overflow-hidden glass video-shadow mb-10 transition-all duration-500">
-            <video id="video" class="w-full aspect-video block bg-black" controls></video>
-            
-            <div id="placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/90 transition-opacity duration-500">
-                <div class="w-16 h-16 bg-blue-600/20 text-blue-500 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    </svg>
-                </div>
-                <p class="text-slate-300 font-light">准备就绪，请选择视频源</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-            <div id="dropZone" class="glass rounded-2xl p-8 text-center cursor-pointer hover:border-blue-500/50 transition-all duration-300 group">
-                <input type="file" id="fileInput" class="hidden" accept=".m3u8">
-                <div class="mb-4 inline-block p-4 rounded-xl bg-slate-800 group-hover:bg-blue-600/10 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
+</html>                    </svg>
                 </div>
                 <h3 class="text-lg font-medium mb-1">选择本地 M3U8</h3>
                 <p class="text-slate-500 text-sm">直接读取文件，无需等待上传</p>
@@ -156,98 +134,6 @@
         }
 
         dropZone.onclick = () => fileInput.click();
-        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drop-zone-active'); });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drop-zone-active'));
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drop-zone-active');
-            const file = e.dataTransfer.files[0];
-            if (file && file.name.endsWith('.m3u8')) playSource(URL.createObjectURL(file));
-        });
-    </script>
-</body>
-</html>                <h3 class="text-lg font-semibold text-blue-800 mb-2 underline decoration-blue-300">使用说明与常见问题</h3>
-                <ul class="list-disc list-inside text-sm text-blue-900 space-y-2">
-                    <li><strong>跨域问题 (CORS)：</strong>如果你播放的是网络链接，请确保该地址允许跨域访问，否则浏览器会拦截请求。</li>
-                    <li><strong>本地文件关联：</strong>如果你的 M3U8 文件引用的是本地相对路径的 .ts 文件，由于浏览器安全策略，可能无法直接播放单个文件（建议将流媒体托管在本地服务器或使用支持本地路径映射的专业软件）。</li>
-                    <li><strong>隐私承诺：</strong>本站不设后台程序，不会存储、记录或监控你播放的任何内容。</li>
-                </ul>
-            </div>
-        </article>
-    </main>
-
-    <footer class="bg-slate-100 py-8 mt-12 border-t border-slate-200">
-        <div class="container mx-auto px-4 text-center text-slate-500 text-sm">
-            <p>© 2026 Local M3U8 Player. Built for privacy and speed.</p>
-        </div>
-    </footer>
-
-    <script>
-        const video = document.getElementById('video');
-        const fileInput = document.getElementById('fileInput');
-        const urlInput = document.getElementById('urlInput');
-        const placeholder = document.getElementById('placeholder');
-        const dropZone = document.getElementById('dropZone');
-
-        let hls = new Hls();
-
-        function playSource(src) {
-            placeholder.classList.add('hidden');
-            if (Hls.isSupported()) {
-                hls.destroy(); // 销毁旧实例
-                hls = new Hls();
-                hls.loadSource(src);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-                
-                hls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) {
-                        alert("播放失败，请检查文件格式或地址是否正确。");
-                    }
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                // 原生支持 HLS 的浏览器 (如 Safari)
-                video.src = src;
-                video.addEventListener('canplay', () => video.play());
-            }
-        }
-
-        // 处理本地文件
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const blobUrl = URL.createObjectURL(file);
-                playSource(blobUrl);
-            }
-        });
-
-        // 处理 URL
-        function loadFromUrl() {
-            const url = urlInput.value.trim();
-            if (url) playSource(url);
-        }
-
-        // 拖拽逻辑
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('active');
-        });
-
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('active'));
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('active');
-            const file = e.dataTransfer.files[0];
-            if (file && file.name.endsWith('.m3u8')) {
-                const blobUrl = URL.createObjectURL(file);
-                playSource(blobUrl);
-            } else {
-                alert("请放入有效的 .m3u8 文件");
-            }
-        });
-
-        dropZone.onclick = () => fileInput.click();
-    </script>
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drop
 </body>
 </html>
