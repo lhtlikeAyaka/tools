@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极简 M3U8 本地播放器 - 100% 隐私安全</title>
+    <meta name="description" content="无需上传服务器，直接在浏览器本地播放 M3U8 视频文件。保护隐私，极速加载，支持 HLS 流媒体协议。">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        .drop-zone { border: 2px dashed #cbd5e1; transition: all 0.3s ease; }
+        .drop-zone.active { border-color: #3b82f6; background-color: #eff6ff; }
+        video::-webkit-media-controls-enclosure { border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+    <nav class="bg-white shadow-sm py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600 flex items-center">
+                <span class="mr-2">🎬</span> Local M3U8 Player
+            </h1>
+            <div class="text-sm text-slate-500">100% 浏览器本地处理</div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <div class="bg-black rounded-xl shadow-2xl overflow-hidden aspect-video mb-8 relative group">
+            <video id="video" class="w-full h-full" controls></video>
+            <div id="placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-white p-6">
+                <p class="mb-4 text-slate-400 text-center">待播放视频<br><span class="text-xs uppercase tracking-widest">Waiting for source</span></p>
+                <button onclick="document.getElementById('fileInput').click()" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-full transition">选择本地文件</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div id="dropZone" class="drop-zone bg-white p-8 rounded-xl text-center cursor-pointer">
+                <input type="file" id="fileInput" class="hidden" accept=".m3u8">
+                <div class="text-4xl mb-2">📁</div>
+                <p class="font-medium">点击或拖拽 M3U8 文件到这里</p>
+                <p class="text-sm text-slate-400 mt-1">支持单一 .m3u8 链接或文件</p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-100 flex flex-col justify-center">
+                <p class="font-medium mb-3">或者输入网络流地址</p>
+                <div class="flex gap-2">
+                    <input type="text" id="urlInput" placeholder="https://example.com/live.m3u8" class="flex-1 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button onclick="loadFromUrl()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-slate-900 transition">播放</button>
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-slate-200 mb-12">
+        
+        <article class="prose prose-slate max-w-none">
+            <h2 class="text-2xl font-bold mb-4">关于 M3U8 本地播放器</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-slate-600 leading-relaxed">
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-800 mb-2">什么是 M3U8？</h3>
+                    <p class="text-sm">M3U8 是一种基于 HTTP Live Streaming (HLS) 协议的索引文件格式。它本质上是一个纯文本文件，记录了视频切片（.ts 文件）的播放顺序和地址。由于其适应性强、抗网络抖动，被广泛应用于在线直播和长视频领域。</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-800 mb-2">为什么选择本地播放？</h3>
+                    <p class="text-sm">传统的在线播放器需要你将视频上传或通过服务器中转。本工具利用 HTML5 的 <code>Blob URL</code> 技术，在你的浏览器内存中直接读取文件，<strong>数据不经过任何服务器</strong>，极大地保护了用户的隐私并节省了流量。</p>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-blue-50 p-6 rounded-lg border border-blue-100">
+                <h3 class="text-lg font-semibold text-blue-800 mb-2 underline decoration-blue-300">使用说明与常见问题</h3>
+                <ul class="list-disc list-inside text-sm text-blue-900 space-y-2">
+                    <li><strong>跨域问题 (CORS)：</strong>如果你播放的是网络链接，请确保该地址允许跨域访问，否则浏览器会拦截请求。</li>
+                    <li><strong>本地文件关联：</strong>如果你的 M3U8 文件引用的是本地相对路径的 .ts 文件，由于浏览器安全策略，可能无法直接播放单个文件（建议将流媒体托管在本地服务器或使用支持本地路径映射的专业软件）。</li>
+                    <li><strong>隐私承诺：</strong>本站不设后台程序，不会存储、记录或监控你播放的任何内容。</li>
+                </ul>
+            </div>
+        </article>
+    </main>
+
+    <footer class="bg-slate-100 py-8 mt-12 border-t border-slate-200">
+        <div class="container mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>© 2026 Local M3U8 Player. Built for privacy and speed.</p>
+        </div>
+    </footer>
+
+    <script>
+        const video = document.getElementById('video');
+        const fileInput = document.getElementById('fileInput');
+        const urlInput = document.getElementById('urlInput');
+        const placeholder = document.getElementById('placeholder');
+        const dropZone = document.getElementById('dropZone');
+
+        let hls = new Hls();
+
+        function playSource(src) {
+            placeholder.classList.add('hidden');
+            if (Hls.isSupported()) {
+                hls.destroy(); // 销毁旧实例
+                hls = new Hls();
+                hls.loadSource(src);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+                
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        alert("播放失败，请检查文件格式或地址是否正确。");
+                    }
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                // 原生支持 HLS 的浏览器 (如 Safari)
+                video.src = src;
+                video.addEventListener('canplay', () => video.play());
+            }
+        }
+
+        // 处理本地文件
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const blobUrl = URL.createObjectURL(file);
+                playSource(blobUrl);
+            }
+        });
+
+        // 处理 URL
+        function loadFromUrl() {
+            const url = urlInput.value.trim();
+            if (url) playSource(url);
+        }
+
+        // 拖拽逻辑
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('active');
+        });
+
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('active'));
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('active');
+            const file = e.dataTransfer.files[0];
+            if (file && file.name.endsWith('.m3u8')) {
+                const blobUrl = URL.createObjectURL(file);
+                playSource(blobUrl);
+            } else {
+                alert("请放入有效的 .m3u8 文件");
+            }
+        });
+
+        dropZone.onclick = () => fileInput.click();
+    </script>
+</body>
+</html>
