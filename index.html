@@ -3,38 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LHTools - 极简万用在线工具箱</title>
+    <title>LHTools - 极简在线工具箱</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { background: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
-        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
-        .glass-card:hover { transform: translateY(-5px); border-color: #3b82f6; box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.3); }
+        body { background: #0f172a; color: #f8fafc; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
+        .glass-card:hover { transform: translateY(-5px); border-color: #3b82f6; }
     </style>
 </head>
 <body class="min-h-screen">
     <nav class="p-6 border-b border-white/5">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="text-2xl font-black tracking-tighter text-blue-500">LI<span class="text-white">TOOLS</span></div>
-            <div class="text-sm text-slate-400">本地处理 · 隐私安全</div>
+            <div class="text-2xl font-black text-blue-500">LI<span class="text-white">TOOLS</span></div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-6 py-20">
-        <header class="max-w-2xl mb-16">
-            <h1 class="text-5xl font-extrabold mb-6 leading-tight">一个更纯净的<br><span class="text-blue-500">工具箱。</span></h1>
-            <p class="text-slate-400 text-lg">无需注册，无需上传。所有工具均在浏览器本地运行，确保您的数据永远不会离开设备。</p>
-        </header>
-
+    <main class="container mx-auto px-6 py-20 text-center md:text-left">
+        <h1 class="text-5xl font-extrabold mb-12">纯净、高效的<span class="text-blue-500">工具箱</span></h1>
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <a href="/m3u8-player" class="glass-card p-8 rounded-3xl group">
+            <a href="/m3u8-player" class="glass-card p-8 rounded-3xl block group">
                 <div class="w-14 h-14 bg-blue-600/10 text-blue-500 rounded-2xl flex items-center justify-center mb-6 text-2xl group-hover:scale-110 transition">🎬</div>
-                <h3 class="text-xl font-bold mb-2 text-white">M3U8 播放器</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">支持 HLS 协议的本地播放器。隐私安全，支持拖拽文件或输入 URL 播放。</p>
-                <div class="mt-8 flex items-center text-blue-500 font-bold text-sm">
-                    进入工具 <span class="ml-2 group-hover:translate-x-2 transition">→</span>
-                </div>
-            </a>        
+                <h3 class="text-xl font-bold mb-2">M3U8 播放器</h3>
+                <p class="text-slate-400 text-sm">支持 HLS 协议的本地隐私播放器。</p>
+                <div class="mt-8 text-blue-500 font-bold text-sm">点击进入 →</div>
+            </a>
+            
+            <div class="glass-card p-8 rounded-3xl opacity-30">
+                <div class="text-2xl mb-6">⏳</div>
+                <h3 class="text-xl font-bold mb-2">开发中...</h3>
+            </div>
+        </div>
+    </main>
+</body>
+</html>            </a>        
         <div class="relative group rounded-2xl overflow-hidden glass video-shadow mb-10 transition-all duration-500">
             <video id="video" class="w-full aspect-video block bg-black" controls></video>
             
