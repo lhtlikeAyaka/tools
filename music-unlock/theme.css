@@ -1,0 +1,35 @@
+:root {
+    --lht-blue-light: #E3F2FD;
+    --lht-blue-main: #2196F3;
+    --lht-blue-dark: #1976D2;
+    --lht-glass: rgba(255, 255, 255, 0.7);
+}
+
+.blue-theme {
+    background: linear-gradient(135deg, var(--lht-blue-light) 0%, #FFFFFF 100%);
+    min-height: 100vh;
+}
+
+.glass-panel {
+    background: var(--lht-glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(33, 150, 243, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+}
+
+#drop-zone {
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto;
+    max-width: 800px;
+    border: 2px dashed var(--lht-blue-main);
+    transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#drop-zone.active {
+    background: rgba(33, 150, 243, 0.1);
+    border-style: solid;
+}
