@@ -3,98 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>二维码生成器 - LHTools</title>
+    <title>QR Generator - LHTools</title>
     <link rel="canonical" href="https://lhttools.top/qr-code" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { background-color: #f0f9ff; color: #1e293b; }
+        body { background-color: #f0f9ff; color: #1e293b; transition: opacity 0.3s; }
         .glass-box { background: white; border: 1px solid #e0f2fe; }
-        /* 强制让生成的二维码居中并保持白边 */
         #qrcode { display: flex; justify-content: center; }
-        #qrcode img, #qrcode canvas { 
-            border: 8px solid white; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-        }
+        #qrcode img, #qrcode canvas { border: 8px solid white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen opacity-0" id="body">
     <nav class="bg-white border-b border-blue-100 p-4 flex justify-between items-center shadow-sm">
         <a href="/" class="font-bold text-blue-600 flex items-center">
             <span class="bg-blue-600 text-white px-2 rounded mr-2">LH</span> TOOLS
         </a>
-        <a href="/" class="text-sm text-slate-400 hover:text-blue-600 transition">返回首页 / Back Home</a>
+        <div class="flex items-center space-x-4">
+            <select id="langSelect" onchange="changeLang(this.value)" class="text-xs border-none bg-transparent text-blue-600 outline-none font-bold">
+                <option value="en">English</option>
+                <option value="zh">简体中文</option>
+                <option value="zh-tw">繁體中文</option>
+                <option value="ja">日本語</option>
+            </select>
+            <a href="/" class="text-sm text-slate-400" data-i18n="back">返回首页</a>
+        </div>
     </nav>
 
     <main class="container mx-auto px-4 max-w-4xl py-10">
         <div class="flex flex-col md:flex-row gap-8">
             <div class="bg-white p-6 rounded-2xl shadow-sm flex-1 glass-box">
-                <label class="block text-sm font-bold text-slate-600 mb-2">输入链接或文字 / Content</label>
-                <textarea id="textInput" class="w-full h-40 p-4 bg-slate-50 border border-blue-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-400 transition mb-4" oninput="gen()">https://lhttools.top</textarea>
+                <label class="block text-sm font-bold text-slate-600 mb-2" data-i18n="input_label">输入内容</label>
+                <textarea id="textInput" data-i18n-placeholder="placeholder_text" class="w-full h-40 p-4 bg-slate-50 border border-blue-100 rounded-xl outline-none focus:ring-2 focus:ring-blue-400 mb-4" oninput="gen()">https://lhttools.top</textarea>
                 
-                <button onclick="downloadQR()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-blue-100 transition flex items-center justify-center">
-                    <span class="mr-2">💾</span> 下载二维码图片 (PNG)
+                <button onclick="downloadQR()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg transition flex items-center justify-center">
+                    <span data-i18n="download_btn">下载图片 (PNG)</span>
                 </button>
-                <p class="text-center text-xs text-slate-400 mt-4">所有生成均在浏览器本地完成，保护隐私</p>
+                <p class="text-center text-xs text-slate-400 mt-4" data-i18n="privacy_note">所有生成均在本地完成</p>
             </div>
 
             <div class="bg-white p-10 rounded-3xl shadow-xl flex-1 text-center flex flex-col justify-center items-center glass-box">
                 <div id="qrcode"></div>
-                <div class="mt-6 text-sm text-slate-400 font-medium">预览 / Preview</div>
+                <div class="mt-6 text-sm text-slate-400 font-medium" data-i18n="preview">预览</div>
             </div>
         </div>
     </main>
 
     <script>
-        const qrcodeElem = document.getElementById("qrcode");
-        const textInput = document.getElementById("textInput");
-        
-        // 初始化二维码对象
-        let qr = new QRCode(qrcodeElem, {
-            text: "https://lhttools.top",
-            width: 256,
-            height: 256,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H
-        });
+        const langData = {
+            en: { back: "Home", input_label: "QR Content", placeholder_text: "Enter URL or text...", download_btn: "Download PNG", privacy_note: "All processing is local and private", preview: "Preview" },
+            zh: { back: "返回首页", input_label: "输入内容", placeholder_text: "输入链接或文字...", download_btn: "下载图片 (PNG)", privacy_note: "所有生成均在本地完成，保护隐私", preview: "预览" },
+            "zh-tw": { back: "返回首頁", input_label: "輸入內容", placeholder_text: "輸入鏈接或文字...", download_btn: "下載圖片 (PNG)", privacy_note: "所有生成均在本地完成，保護隱私", preview: "預覽" },
+            ja: { back: "ホーム", input_label: "コンテンツ", placeholder_text: "URLまたはテキストを入力...", download_btn: "PNGを保存", privacy_note: "すべての処理はローカルで安全です", preview: "プレビュー" }
+        };
 
-        // 实时生成函数
+        const qrcodeElem = document.getElementById("qrcode");
+        let qr = new QRCode(qrcodeElem, { width: 256, height: 256, correctLevel: QRCode.CorrectLevel.H });
+
         function gen() {
-            const val = textInput.value.trim();
-            qr.clear(); 
-            qr.makeCode(val || " ");
+            const val = document.getElementById("textInput").value.trim();
+            qr.clear(); qr.makeCode(val || " ");
         }
 
-        // 修复后的下载函数
         function downloadQR() {
-            // qrcode.js 有时生成 canvas, 有时生成 img
             const img = qrcodeElem.querySelector('img');
             const canvas = qrcodeElem.querySelector('canvas');
-            
-            let dataUrl = "";
-            
-            if (img && img.src && !img.src.startsWith('data:image/svg')) {
-                dataUrl = img.src;
-            } else if (canvas) {
-                dataUrl = canvas.toDataURL("image/png");
-            }
-
+            const dataUrl = img?.src || canvas?.toDataURL("image/png");
             if (dataUrl) {
-                const link = document.createElement("a");
-                link.href = dataUrl;
-                link.download = `LHTools-QR-${Date.now()}.png`; // 确保文件名以 .png 结尾
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                alert("生成失败，请尝试刷新页面");
+                const a = document.createElement("a");
+                a.href = dataUrl; a.download = `LHTools-QR.png`;
+                a.click();
             }
         }
 
-        // 页面加载时自动生成一次
-        window.onload = gen;
+        function updateUI(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.innerText = langData[lang][el.getAttribute('data-i18n')];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                el.placeholder = langData[lang][el.getAttribute('data-i18n-placeholder')];
+            });
+            document.getElementById('langSelect').value = lang;
+            document.getElementById('body').classList.add('opacity-100');
+        }
+
+        function changeLang(lang) {
+            localStorage.setItem('lht_lang', lang);
+            updateUI(lang);
+        }
+
+        const savedLang = localStorage.getItem('lht_lang') || (navigator.language.includes('zh') ? (navigator.language.includes('tw') ? 'zh-tw' : 'zh') : (navigator.language.includes('ja') ? 'ja' : 'en'));
+        updateUI(savedLang);
+        gen();
     </script>
 </body>
 </html>
