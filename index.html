@@ -60,11 +60,51 @@
 
     <script>
         const langData = {
-            en: { welcome: "Welcome to LHTools", intro: "Privacy-focused toolbox. All tasks stay on your device.", p_title: "M3U8 Player", p_desc: "Pure HLS stream player.", q_title: "QR Generator", q_desc: "Create and download QR codes.", start: "Start Now →" },
-            zh: { welcome: "欢迎来到 LHTools", intro: "专注于隐私与效率的工具箱。所有操作均在本地完成。", p_title: "M3U8 播放器", p_desc: "纯净的 HLS 视频流播放工具。", q_title: "二维码生成", q_desc: "快速生成并下载自定义二维码。", start: "立即使用 →" },
-            "zh-tw": { welcome: "歡迎來到 LHTools", intro: "專注於隱私與效率的工具箱。所有操作均在本地完成。", p_title: "M3U8 播放器", p_desc: "純淨的 HLS 視頻流播放工具。", q_title: "二維碼生成", q_desc: "快速生成並下載自定義二維碼。", start: "立即使用 →" },
-            ja: { welcome: "LHToolsへようこそ", intro: "プライバシー重視のツールボックス。すべての処理はローカルです。", p_title: "M3U8 プレーヤー", p_desc: "純粋なHLSストリーム再生。", q_title: "QRコード作成", q_desc: "QRコードを素早く作成して保存。", start: "今すぐ使う →" }
-        };
+    en: { 
+        welcome: "Welcome to LHTools", 
+        intro: "Privacy-focused toolbox. All tasks stay on your device.", 
+        p_title: "M3U8 Player", 
+        p_desc: "Pure HLS stream player.", 
+        q_title: "QR Generator", 
+        q_desc: "Create and download QR codes.", 
+        t_title: "Text Tools", // 新增这个
+        t_desc: "Word count, Case converter.", // 新增这个
+        start: "Start Now →" 
+    },
+    zh: { 
+        welcome: "欢迎来到 LHTools", 
+        intro: "专注于隐私与效率的工具箱。所有操作均在本地完成。", 
+        p_title: "M3U8 播放器", 
+        p_desc: "纯净的 HLS 视频流播放工具。", 
+        q_title: "二维码生成", 
+        q_desc: "快速生成并下载自定义二维码。", 
+        t_title: "文本处理箱", // 新增这个
+        t_desc: "字数统计、大小写转换、格式化。", // 新增这个
+        start: "立即使用 →" 
+    },
+    "zh-tw": { 
+        welcome: "歡迎來到 LHTools", 
+        intro: "專注於隱私與效率的工具箱。所有操作均在本地完成。", 
+        p_title: "M3U8 播放器", 
+        p_desc: "純淨的 HLS 視頻流播放工具。", 
+        q_title: "二維碼生成", 
+        q_desc: "快速生成並下載自定義二維碼。", 
+        t_title: "文本處理箱", // 新增这个
+        t_desc: "字數統計、大小寫轉換、格式化。", // 新增这个
+        start: "立即使用 →" 
+    },
+    ja: { 
+        welcome: "LHToolsへようこそ", 
+        intro: "プライバシー重視のツールボックス。すべての処理はローカルです。", 
+        p_title: "M3U8 プレーヤー", 
+        p_desc: "純粋なHLSストリーム再生。", 
+        q_title: "QRコード作成", 
+        q_desc: "QRコードを素早く作成して保存。", 
+        t_title: "テキストツール", // 新增这个
+        t_desc: "文字数カウント、大文字小文字変換。", // 新增这个
+        start: "今すぐ使う →" 
+    }
+};
         function updateUI(lang) {
             document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = langData[lang][el.getAttribute('data-i18n')]);
             document.getElementById('langSelect').value = lang;
