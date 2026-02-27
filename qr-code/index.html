@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码生成器 - LHTools</title>
+    <meta name="description" content="Free online QR code generator. Privacy-focused, local processing. Create and download QR codes instantly.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { background-color: #f0f9ff; color: #1e293b; }
+        .glass-box { background: white; border: 1px solid #e0f2fe; }
+        #qrcode img { margin: 0 auto; border: 8px solid white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body class="min-h-screen opacity-0 transition-opacity duration-300" id="body">
+    <nav class="bg-white border-b border-blue-100 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="flex items-center space-x-2">
+                <div class="bg-blue-600 text-white px-2 py-0.5 rounded font-bold text-lg">LH</div>
+                <span class="font-bold text-slate-700 uppercase">Tools</span>
+            </a>
+            <div class="flex items-center space-x-4">
+                <select id="langSelect" onchange="changeLang(this.value)" class="text-xs border-none bg-transparent text-blue-600 outline-none">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="zh-tw">繁體中文</option>
+                    <option value="ja">日本語</option>
+                </select>
+                <a href="/" class="text-sm text-slate-400" data-i18n="back">返回首页</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 max-w-4xl py-10">
+        <div class="flex flex-col md:flex-row gap-8">
+            <div class="flex-1 space-y-6">
+                <div class="glass-box p-6 rounded-2xl shadow-sm">
+                    <h2 class="text-lg font-bold mb-4 text-slate-700" data-i18n="input_title">配置内容</h2>
+                    <textarea id="textInput" data-i18n-placeholder="placeholder_text" class="w-full h-32 p-4 bg-slate-50 border border-blue-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm mb-4" oninput="generateQR()">https://lhttools.top</textarea>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1" data-i18n="size">尺寸 (px)</label>
+                            <input type="number" id="qrSize" value="256" step="32" class="w-full bg-slate-50 border border-blue-100 rounded-lg px-3 py-2 text-sm outline-none" oninput="generateQR()">
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="downloadQR()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-bold shadow-md transition" data-i18n="download">下载图片</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 flex items-center justify-center">
+                <div class="glass-box p-10 rounded-3xl shadow-xl shadow-blue-200/50 text-center w-full max-w-xs">
+                    <div id="qrcode" class="mb-4"></div>
+                    <p class="text-xs text-slate-400 italic" data-i18n="realtime">实时生成，本地加密</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const langData = {
+            en: { back: "Home", input_title: "QR Content", placeholder_text: "Enter URL or text...", size: "Size (px)", download: "Download PNG", realtime: "Real-time generation, local only" },
+            zh: { back: "返回首页", input_title: "配置内容", placeholder_text: "输入链接或文本...", size: "尺寸 (像素)", download: "下载图片", realtime: "实时生成，本地处理" },
+            "zh-tw": { back: "返回首頁", select_file: "配置內容", placeholder_text: "輸入鏈接或文本...", size: "尺寸 (像素)", download: "下載圖片", realtime: "即時生成，本地處理" },
+            ja: { back: "ホーム", select_file: "コンテンツ", placeholder_text: "URLまたはテキストを入力...", size: "サイズ (px)", download: "ダウンロード", realtime: "リアルタイム生成、ローカルのみ" }
+        };
+
+        const qrcodeContainer = document.getElementById("qrcode");
+        let qr = null;
+
+        function generateQR() {
+            const text = document.getElementById("textInput").value;
+            const size = document.getElementById("qrSize").value || 256;
+            
+            qrcodeContainer.innerHTML = "";
+            qr = new QRCode(qrcodeContainer, {
+                text: text || " ",
+                width: size,
+                height: size,
+                colorDark: "#1e293b",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function downloadQR() {
+            const img = qrcodeContainer.querySelector("img");
+            if (img) {
+                const link = document.createElement("a");
+                link.download = `lhttools-qr-${Date.now()}.png`;
+                link.href = img.src;
+                link.click();
+            }
+        }
+
+        function updateUI(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = langData[lang][el.getAttribute('data-i18n')]);
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = langData[lang][el.getAttribute('data-i18n-placeholder')]);
+            document.getElementById('langSelect').value = lang;
+            document.getElementById('body').classList.add('opacity-100');
+        }
+
+        function changeLang(lang) {
+            localStorage.setItem('lht_lang', lang);
+            updateUI(lang);
+        }
+
+        const currentLang = localStorage.getItem('lht_lang') || (navigator.language.includes('zh') ? (navigator.language.includes('tw') ? 'zh-tw' : 'zh') : (navigator.language.includes('ja') ? 'ja' : 'en'));
+        updateUI(currentLang);
+        generateQR();
+    </script>
+</body>
+</html>
