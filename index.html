@@ -3,79 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M3U8 播放器 - LHTools</title>
+    <title>LHTools - 简约在线工具箱</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body { background-color: #f0f9ff; color: #1e293b; }
-        .glass-box { background: white; border: 1px solid #e0f2fe; }
-        video { background: #000; border-radius: 12px; }
+        body { background-color: #f0f9ff; color: #1e293b; transition: opacity 0.3s; }
+        .tool-card { background: white; border: 1px solid #e0f2fe; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: all 0.2s; }
+        .tool-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(186, 230, 253, 0.5); border-color: #7dd3fc; }
+        [data-i18n] { transition: opacity 0.2s; }
     </style>
 </head>
-<body class="min-h-screen">
-    <nav class="bg-white border-b border-blue-100 p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="/" class="flex items-center space-x-2">
-                <div class="bg-blue-600 text-white px-2 py-0.5 rounded font-bold text-lg">LH</div>
-                <span class="font-bold text-slate-700">TOOLS</span>
-            </a>
-            <a href="/" class="text-sm text-blue-600 hover:underline">返回首页</a>
+<body class="min-h-screen opacity-0" id="body">
+    <nav class="bg-white border-b border-blue-100 py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="text-2xl font-bold text-blue-600">LH<span class="text-slate-700">TOOLS</span></div>
+            <div class="flex items-center space-x-4">
+                <select id="langSelect" onchange="changeLang(this.value)" class="bg-slate-50 border border-blue-100 text-xs rounded px-2 py-1 outline-none text-slate-500">
+                    <option value="en">English</option>
+                    <option value="zh">简体中文</option>
+                    <option value="zh-tw">繁體中文</option>
+                    <option value="ja">日本語</option>
+                </select>
+            </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-4 max-w-4xl py-10">
-        <div class="glass-box p-2 rounded-2xl shadow-xl shadow-blue-200/50 mb-8">
-            <video id="video" class="w-full aspect-video" controls></video>
-        </div>
+    <main class="container mx-auto px-6 py-16 max-w-5xl">
+        <header class="mb-12">
+            <h1 class="text-3xl font-bold text-slate-800 mb-4" data-i18n="welcome">欢迎来到 LHTools</h1>
+            <p class="text-slate-500 max-w-xl" data-i18n="intro">一个专注于隐私和效率的工具箱。所有操作均在本地完成，我们不会存储您的任何数据。</p>
+        </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div onclick="document.getElementById('fileInput').click()" class="glass-box p-6 rounded-xl text-center cursor-pointer hover:bg-blue-50 border-2 border-dashed border-blue-100 transition">
-                <input type="file" id="fileInput" class="hidden" accept=".m3u8">
-                <span class="text-blue-600 text-sm font-medium">选择本地 .m3u8 文件</span>
-            </div>
-
-            <div class="glass-box p-6 rounded-xl flex space-x-2">
-                <input type="text" id="urlInput" placeholder="输入视频流地址..." class="flex-1 bg-slate-50 border border-blue-100 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <button onclick="loadUrl()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md shadow-blue-200">播放</button>
-            </div>
-        </div>
-
-        <div class="mt-12 bg-white/50 p-6 rounded-xl border border-blue-100/50">
-            <h2 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">使用提示</h2>
-            <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside">
-                <li>支持 HLS (m3u8) 格式视频流。</li>
-                <li>本地文件播放仅限单文件，若包含切片请确保网络可达。</li>
-                <li>LHTools 不会记录或上传您的播放地址。</li>
-            </ul>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a href="/m3u8-player" class="tool-card p-6 rounded-2xl block group">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 text-2xl group-hover:bg-blue-600 group-hover:text-white transition-colors">🎬</div>
+                <h3 class="text-lg font-bold mb-2" data-i18n="player_title">M3U8 播放器</h3>
+                <p class="text-slate-500 text-sm leading-relaxed" data-i18n="player_desc">纯净的 HLS 视频流播放工具，支持本地文件加载。</p>
+                <div class="mt-4 text-blue-600 text-xs font-bold flex items-center">
+                    <span data-i18n="start">开始使用</span> <span class="ml-1">→</span>
+                </div>
+            </a>
         </div>
     </main>
 
     <script>
-        const video = document.getElementById('video');
-        const fileInput = document.getElementById('fileInput');
-        let hls = new Hls();
+        const langData = {
+            en: { welcome: "Welcome to LHTools", intro: "A toolbox focused on privacy and efficiency. All operations stay local.", player_title: "M3U8 Player", player_desc: "Pure HLS video stream player with local file support.", start: "Start Now" },
+            zh: { welcome: "欢迎来到 LHTools", intro: "专注于隐私与效率的工具箱，所有操作均在本地完成。", player_title: "M3U8 播放器", player_desc: "纯净的 HLS 视频流播放工具，支持本地文件加载。", start: "立即使用" },
+            "zh-tw": { welcome: "歡迎來到 LHTools", intro: "專注於隱私與效率的工具箱，所有操作均在本地完成。", player_title: "M3U8 播放器", player_desc: "純淨的 HLS 視頻流播放工具，支持本地文件加載。", start: "立即使用" },
+            ja: { welcome: "LHToolsへようこそ", intro: "プライバシーと効率に重点を置いたツールボックス。すべての操作はローカルで行われます。", player_title: "M3U8 プレーヤー", player_desc: "ローカルファイルをサポートする純粋なHLSビデオストリームプレーヤー。", start: "今すぐ使う" }
+        };
 
-        function playSource(src) {
-            if (Hls.isSupported()) {
-                hls.destroy();
-                hls = new Hls();
-                hls.loadSource(src);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = src;
-                video.play();
-            }
+        function updateUI(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.innerText = langData[lang][key] || langData['en'][key];
+            });
+            document.getElementById('langSelect').value = lang;
+            document.getElementById('body').classList.add('opacity-100');
         }
 
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files[0]) playSource(URL.createObjectURL(e.target.files[0]));
-        });
-
-        function loadUrl() {
-            const url = document.getElementById('urlInput').value.trim();
-            if (url) playSource(url);
+        function changeLang(lang) {
+            localStorage.setItem('lht_lang', lang);
+            updateUI(lang);
         }
+
+        // 语言检测逻辑
+        const savedLang = localStorage.getItem('lht_lang');
+        const browserLang = navigator.language.toLowerCase();
+        let defaultLang = 'en';
+
+        if (savedLang) { defaultLang = savedLang; }
+        else if (browserLang.includes('zh-tw') || browserLang.includes('zh-hk')) { defaultLang = 'zh-tw'; }
+        else if (browserLang.includes('zh')) { defaultLang = 'zh'; }
+        else if (browserLang.includes('ja')) { defaultLang = 'ja'; }
+
+        updateUI(defaultLang);
     </script>
 </body>
 </html>
