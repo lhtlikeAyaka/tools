@@ -7,48 +7,46 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body { background: #0f172a; color: #f8fafc; }
-        .glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
-        .drop-zone-active { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        body { background-color: #f0f9ff; color: #1e293b; }
+        .glass-box { background: white; border: 1px solid #e0f2fe; }
+        video { background: #000; border-radius: 12px; }
     </style>
 </head>
 <body class="min-h-screen">
-    <nav class="p-4 glass sticky top-0 z-50">
+    <nav class="bg-white border-b border-blue-100 p-4">
         <div class="container mx-auto flex justify-between items-center">
             <a href="/" class="flex items-center space-x-2">
-                <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold">L</div>
-                <span class="font-bold tracking-tight">LHTools</span>
+                <div class="bg-blue-600 text-white px-2 py-0.5 rounded font-bold text-lg">LH</div>
+                <span class="font-bold text-slate-700">TOOLS</span>
             </a>
-            <div class="flex space-x-4 text-xs uppercase tracking-widest text-slate-400">
-                <a href="/" class="hover:text-white">首页</a>
-                <span>/</span>
-                <span class="text-blue-500">M3U8 Player</span>
-            </div>
+            <a href="/" class="text-sm text-blue-600 hover:underline">返回首页</a>
         </div>
     </nav>
 
-    <main class="container mx-auto px-4 max-w-4xl py-12">
-        <div class="rounded-2xl overflow-hidden glass shadow-2xl mb-8">
-            <video id="video" class="w-full aspect-video bg-black" controls></video>
+    <main class="container mx-auto px-4 max-w-4xl py-10">
+        <div class="glass-box p-2 rounded-2xl shadow-xl shadow-blue-200/50 mb-8">
+            <video id="video" class="w-full aspect-video" controls></video>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div id="dropZone" class="glass rounded-2xl p-8 text-center cursor-pointer border-2 border-dashed border-slate-700 transition-all">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div onclick="document.getElementById('fileInput').click()" class="glass-box p-6 rounded-xl text-center cursor-pointer hover:bg-blue-50 border-2 border-dashed border-blue-100 transition">
                 <input type="file" id="fileInput" class="hidden" accept=".m3u8">
-                <p class="text-sm text-slate-300">拖拽或选择本地 .m3u8 文件</p>
+                <span class="text-blue-600 text-sm font-medium">选择本地 .m3u8 文件</span>
             </div>
 
-            <div class="glass rounded-2xl p-8 flex flex-col justify-center">
-                <div class="flex space-x-2">
-                    <input type="text" id="urlInput" placeholder="输入 URL 播放地址..." class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-sm outline-none focus:border-blue-500">
-                    <button onclick="loadUrl()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-bold">播放</button>
-                </div>
+            <div class="glass-box p-6 rounded-xl flex space-x-2">
+                <input type="text" id="urlInput" placeholder="输入视频流地址..." class="flex-1 bg-slate-50 border border-blue-100 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <button onclick="loadUrl()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md shadow-blue-200">播放</button>
             </div>
         </div>
 
-        <div class="mt-16 prose prose-invert opacity-50 text-sm">
-            <h2 class="text-lg font-bold text-white">关于 M3U8 播放器</h2>
-            <p>本工具基于 Hls.js 开发，旨在提供一个安全、快速的流媒体预览方案。所有视频数据仅在内存中处理，不经过后端存储。</p>
+        <div class="mt-12 bg-white/50 p-6 rounded-xl border border-blue-100/50">
+            <h2 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-3">使用提示</h2>
+            <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside">
+                <li>支持 HLS (m3u8) 格式视频流。</li>
+                <li>本地文件播放仅限单文件，若包含切片请确保网络可达。</li>
+                <li>LHTools 不会记录或上传您的播放地址。</li>
+            </ul>
         </div>
     </main>
 
@@ -57,7 +55,7 @@
         const fileInput = document.getElementById('fileInput');
         let hls = new Hls();
 
-        function play(src) {
+        function playSource(src) {
             if (Hls.isSupported()) {
                 hls.destroy();
                 hls = new Hls();
@@ -71,24 +69,13 @@
         }
 
         fileInput.addEventListener('change', (e) => {
-            if (e.target.files[0]) play(URL.createObjectURL(e.target.files[0]));
+            if (e.target.files[0]) playSource(URL.createObjectURL(e.target.files[0]));
         });
 
         function loadUrl() {
-            const url = document.getElementById('urlInput').value;
-            if (url) play(url);
+            const url = document.getElementById('urlInput').value.trim();
+            if (url) playSource(url);
         }
-
-        // 拖拽逻辑略 (参考之前代码)
-        const dz = document.getElementById('dropZone');
-        dz.onclick = () => fileInput.click();
-        dz.ondragover = (e) => { e.preventDefault(); dz.classList.add('drop-zone-active'); };
-        dz.ondragleave = () => dz.classList.remove('drop-zone-active');
-        dz.ondrop = (e) => {
-            e.preventDefault();
-            dz.classList.remove('drop-zone-active');
-            if (e.dataTransfer.files[0]) play(URL.createObjectURL(e.dataTransfer.files[0]));
-        };
     </script>
 </body>
 </html>
