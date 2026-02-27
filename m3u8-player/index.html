@@ -21,7 +21,7 @@
     "price": "0"
   }
 }
-</script>
+</script>  
 <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
@@ -54,27 +54,22 @@
             <video id="video" class="w-full aspect-video" controls></video>
         </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div onclick="document.getElementById('fileInput').click()" class="glass-box p-6 rounded-xl text-center cursor-pointer hover:bg-blue-50 border-2 border-dashed border-blue-100 transition">
                 <input type="file" id="fileInput" class="hidden" accept=".m3u8">
                 <span class="text-blue-600 text-sm font-medium" data-i18n="select_file">选择本地 .m3u8 文件</span>
             </div>
             <div class="glass-box p-6 rounded-xl flex space-x-2">
-              <input type="text" id="urlInput" data-i18n-placeholder="placeholder_url" class="flex-1 bg-slate-50 border border-blue-100 rounded-lg px-4 py-2 text-sm outline-none">
+                <input type="text" id="urlInput" data-i18n-placeholder="placeholder_url" class="flex-1 bg-slate-50 border border-blue-100 rounded-lg px-4 py-2 text-sm outline-none">
                 <button onclick="loadUrl()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md" data-i18n="play">播放</button>
             </div>
         </div>
     </main>
 
-  <script>
+    <script>
         const langData = {
             en: { back: "Home", select_file: "Choose Local .m3u8", placeholder_url: "Video URL...", play: "Play" },
             zh: { back: "返回首页", select_file: "选择本地 .m3u8 文件", placeholder_url: "输入视频流地址...", play: "播放" },
-            "zh-tw": { back: "返回首頁", select_file: "選擇本地 .m3u8 文件", placeholder_url: "輸入視頻流地址...", play: "播放" },
-            ja: { back: "ホーム", select_file: "ローカルファイルを選択", placeholder_url: "動画URLを入力...", play: "再生" }
-        };
-
-                zh: { back: "返回首页", select_file: "选择本地 .m3u8 文件", placeholder_url: "输入视频流地址...", play: "播放" },
             "zh-tw": { back: "返回首頁", select_file: "選擇本地 .m3u8 文件", placeholder_url: "輸入視頻流地址...", play: "播放" },
             ja: { back: "ホーム", select_file: "ローカルファイルを選択", placeholder_url: "動画URLを入力...", play: "再生" }
         };
@@ -90,7 +85,12 @@
             document.getElementById('body').style.opacity = 1;
         }
 
-    const currentLang = localStorage.getItem('lht_lang') || (navigator.language.includes('zh') ? (navigator.language.includes('tw') ? 'zh-tw' : 'zh') : (navigator.language.includes('ja') ? 'ja' : 'en'));
+        function changeLang(lang) {
+            localStorage.setItem('lht_lang', lang);
+            updateUI(lang);
+        }
+
+        const currentLang = localStorage.getItem('lht_lang') || (navigator.language.includes('zh') ? (navigator.language.includes('tw') ? 'zh-tw' : 'zh') : (navigator.language.includes('ja') ? 'ja' : 'en'));
         updateUI(currentLang);
 
         // 播放逻辑... (保持之前代码一致)
@@ -100,7 +100,7 @@
             if (Hls.isSupported()) {
                 hls.destroy(); hls = new Hls();
                 hls.loadSource(src); hls.attachMedia(video);
-              hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+                hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
             }
         }
         function loadUrl() { const url = document.getElementById('urlInput').value.trim(); if (url) playSource(url); }
